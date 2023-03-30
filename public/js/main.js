@@ -12,7 +12,8 @@ const bikeIcon = {
     scaledSize: new google.maps.Size(25, 25),
 };
 
-function handleClick() {
+function handleClick(clicktype) {
+    console.log(clicktype + " triggered")
     const station = this;
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -122,10 +123,10 @@ async function displayClosestStations() {
                 // });
 
                 // Add click event listener
-                marker.addListener('click', handleClick);
+                marker.addListener('click', handleClick("click"));
 
                 // Add click event listener
-                marker.addListener('touchstart', handleClick);
+                marker.addListener('touchstart', handleClick("touchstart"));
 
 
                 markers.push(marker);
