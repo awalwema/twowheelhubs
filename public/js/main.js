@@ -12,6 +12,25 @@ const bikeIcon = {
     scaledSize: new google.maps.Size(25, 25),
 };
 
+function handleClick() {
+    const station = this;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+                window.open(googleMapsUrl, '_blank');
+            },
+            () => {
+                alert('Error: Geolocation is not available or permission is denied.');
+            }
+        );
+    } else {
+        alert('Error: Geolocation is not supported by this browser.');
+    }
+}
+
+
 async function getDestinationCoordinates(destination) {
     const geocoder = new google.maps.Geocoder();
     return new Promise((resolve, reject) => {
@@ -83,47 +102,9 @@ async function displayClosestStations() {
                     icon: bikeIcon,
                 });
 
-                // Add click event listener
-                marker.addListener('pointerdown', () => {
-                    console.log('Marker pointer event triggered');
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                                const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
-                                window.open(googleMapsUrl, '_blank');
-                            },
-                            () => {
-                                alert('Error: Geolocation is not available or permission is denied.');
-                            }
-                        );
-                    } else {
-                        alert('Error: Geolocation is not supported by this browser.');
-                    }
-                });
-
-                // Add click event listener
-                // marker.addListener('click', () => {
-                //     console.log('Marker mouseclick event triggered');
-                //     if (navigator.geolocation) {
-                //         navigator.geolocation.getCurrentPosition(
-                //             (position) => {
-                //                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                //                 const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
-                //                 window.open(googleMapsUrl, '_blank');
-                //             },
-                //             () => {
-                //                 alert('Error: Geolocation is not available or permission is denied.');
-                //             }
-                //         );
-                //     } else {
-                //         alert('Error: Geolocation is not supported by this browser.');
-                //     }
-                // });
-
                 // // Add click event listener
-                // marker.addListener('touchstart', () => {
-                //     console.log('Marker touchstart event triggered');
+                // marker.addListener('pointerdown', () => {
+                //     console.log('Marker pointer event triggered');
                 //     if (navigator.geolocation) {
                 //         navigator.geolocation.getCurrentPosition(
                 //             (position) => {
@@ -139,6 +120,12 @@ async function displayClosestStations() {
                 //         alert('Error: Geolocation is not supported by this browser.');
                 //     }
                 // });
+
+                // Add click event listener
+                marker.addListener('click', handleClick);
+
+                // Add click event listener
+                marker.addListener('touchstart', handleClick);
 
 
                 markers.push(marker);
