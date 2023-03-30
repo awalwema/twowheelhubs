@@ -85,7 +85,7 @@ async function displayClosestStations() {
 
                 // Add click event listener
                 marker.addListener('pointerdown', () => {
-                    console.log('Marker mouseclick event triggered');
+                    console.log('Marker pointer event triggered');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             (position) => {
