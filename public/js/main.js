@@ -61,6 +61,9 @@ function handleClick(clickType) {
                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
 
+                    console.log('User location:', userLatLng.toString());
+                    console.log('Google Maps URL:', googleMapsUrl);
+
                     // Create an anchor element and set its href attribute to the Google Maps URL
                     const link = document.createElement('a');
                     link.href = googleMapsUrl;
@@ -71,10 +74,12 @@ function handleClick(clickType) {
 
                 },
                 () => {
+                    console.log('Error: Geolocation is not available or permission is denied.');
                     alert('Error: Geolocation is not available or permission is denied.');
                 }
             );
         } else {
+            console.log('Error: Geolocation is not supported by this browser.');
             alert('Error: Geolocation is not supported by this browser.');
         }
     };
