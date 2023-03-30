@@ -92,42 +92,44 @@ const bikeIcon = {
 //     };
 // }
 
+function isIOS() {
+    return (
+        ["iPad Simulator", "iPhone Simulator", "iPod Simulator", "iPad", "iPhone", "iPod"].includes(navigator.platform) ||
+        (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    );
+}
+
 function handleClick(clickType) {
     return function () {
         console.log(clickType + " triggered");
         const station = this;
-        const modal = document.getElementById('confirmModal');
-        const confirmYes = document.getElementById('confirmYes');
-        const confirmNo = document.getElementById('confirmNo');
 
-        // Show the modal
-        modal.style.display = 'block';
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                    let mapsUrl;
 
-        // When the user clicks on Yes, open the Google Maps URL
-        confirmYes.onclick = () => {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
-                        window.open(googleMapsUrl, '_blank');
-                    },
-                    () => {
-                        alert('Error: Geolocation is not available or permission is denied.');
+                    if (isIOS()) {
+                        // Use Apple Maps URL for iOS devices
+                        mapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
+                    } else {
+                        // Use Google Maps URL for other devices
+                        mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
                     }
-                );
-            } else {
-                alert('Error: Geolocation is not supported by this browser.');
-            }
-            modal.style.display = 'none';
-        };
 
-        // When the user clicks on No, close the modal
-        confirmNo.onclick = () => {
-            modal.style.display = 'none';
-        };
+                    window.open(mapsUrl, "_blank");
+                },
+                () => {
+                    alert("Error: Geolocation is not available or permission is denied.");
+                }
+            );
+        } else {
+            alert("Error: Geolocation is not supported by this browser.");
+        }
     };
 }
+
 
 
 
