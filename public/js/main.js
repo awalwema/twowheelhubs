@@ -336,7 +336,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     icon: bikeIcon,
                     title: station.name,
                 });
-                marker.addEventListener('click', handleClick("click"))
+                marker.addListener('click', handleClick("click"))
                 markers.push(marker);
             });
             console.log('Markers:', markers);
