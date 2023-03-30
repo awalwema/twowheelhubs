@@ -69,10 +69,15 @@ function handleClick(clickType) {
                     link.href = googleMapsUrl;
                     link.target = '_blank';
 
-                    // Trigger a click event on the anchor element programmatically
-                    console.log('Before triggering click event');
-                    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
-                    console.log('After triggering click event');
+                    const button = document.createElement('button');
+                    button.textContent = 'Open Google Maps';
+                    button.onclick = () => {
+                        link.click();
+                    };
+
+                    // Append the button to a container, e.g., the 'closest-stations' list or another suitable container
+                    const container = document.getElementById('closest-stations');
+                    container.appendChild(button);
 
                 },
                 () => {
