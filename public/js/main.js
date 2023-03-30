@@ -53,8 +53,7 @@ function handleClick(clickType) {
 
 // ...
 
-marker.addListener('click', handleClick("click"));
-marker.addListener('touchstart', handleClick("touchstart"));
+
 
 
 
@@ -148,10 +147,7 @@ async function displayClosestStations() {
                 //     }
                 // });
 
-                // Add click event listener
                 marker.addListener('click', handleClick("click"));
-
-                // Add click event listener
                 marker.addListener('touchstart', handleClick("touchstart"));
 
 
