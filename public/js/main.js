@@ -70,7 +70,9 @@ function handleClick(clickType) {
                     link.target = '_blank';
 
                     // Trigger a click event on the anchor element programmatically
+                    console.log('Before triggering click event');
                     link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+                    console.log('After triggering click event');
 
                 },
                 () => {
