@@ -111,6 +111,7 @@ function handleClick(clickType) {
                     let mapsUrl;
 
                     if (isIOS()) {
+                        console.log("is iphone!!!!")
                         // Use Apple Maps URL for iOS devices
                         mapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
                     } else {
