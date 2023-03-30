@@ -4,6 +4,7 @@ let map;
 let destinationMarker = null;
 let directionsRenderer = null;
 let directionsService = null;
+let autocomplete;
 
 
 const bikeIcon = {
@@ -49,6 +50,9 @@ async function displayClosestStations() {
     geocoder.geocode({ address: destination.toString() }, async (results, status) => {
         if (status === 'OK') {
             const destinationLatLng = results[0].geometry.location;
+
+            // Set the map center to the destination
+            map.setCenter(destinationLatLng);
 
             // Remove the previous destination marker if it exists
             if (destinationMarker) {
@@ -105,7 +109,7 @@ async function displayClosestStations() {
             list.innerHTML = '';
             closestStations.forEach((station, index) => {
                 const li = document.createElement('li');
-                li.textContent = `${index + 1}. ${station.name}`;
+                li.textContent = `${station.name}`;
                 list.appendChild(li);
             });
         } else {
@@ -116,7 +120,17 @@ async function displayClosestStations() {
 
 function initAutocomplete(map) {
     const input = document.getElementById('destination');
-    new google.maps.places.Autocomplete(input);
+    autocomplete = new google.maps.places.Autocomplete(input);
+
+    // Add a listener for the place_changed event
+    autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+            window.alert("No details available for input: '" + place.name + "'");
+            return;
+        }
+        displayClosestStations();
+    });
 }
 
 function removeMarkers() {
@@ -144,7 +158,14 @@ async function requestDirections(origin, destination) {
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-    stations = JSON.parse(document.getElementById('map').dataset.stations);
+    const jsonString = document.getElementById('map').dataset.stations;
+
+    if (jsonString) {
+        stations = JSON.parse(jsonString);
+    } else {
+        console.error('Error: JSON data not found');
+    }
+
 
 
     function initMap(stations, callback) {
@@ -206,9 +227,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-document.getElementById('locate').addEventListener('click', () => {
-    showUserLocation(map);
-});
+// document.getElementById('locate').addEventListener('click', () => {
+//     showUserLocation(map);
+// });
 
 document.getElementById('search').addEventListener('click', () => {
     const destination = document.getElementById('destination').value;

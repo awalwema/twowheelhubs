@@ -4,40 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bay Wheels Stations</title>
-
+    <title>Closest Bike Stations</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALLWCBHM3rd9dx3Mhyqspj5-5q_Llm4cw&libraries=geometry,places"></script>
-
-
-    <style>
-        #map {
-            height: 100%;
-            width: 100%;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
 </head>
 
 <body>
-    <div>
-        <input type="text" id="destination" placeholder="Enter your destination" />
-        <button id="search">Search nearby stations</button>
+    <div class="app-container">
+        <h1>Find Closest Bike Stations</h1>
+        <p>Follow these simple steps to find the closest bike stations:</p>
+        <ol>
+            <li>Enter your destination in the search box.</li>
+            <li>Click "Search" to find the nearest bike stations.</li>
+            <li>Click on a bike station marker for directions.</li>
+        </ol>
+
+        <div class="search-container">
+            <input id="destination" type="text" placeholder="Enter destination...">
+            <button id="search">Search</button>
+        </div>
+
+        <div id="map" class="map-container" data-stations="<%= JSON.stringify(stations) %>"></div>
+        <h2>Closest Stations:</h2>
+        <ol id="closest-stations" class="stations-list"></ol>
     </div>
-    <button id="locate">Locate me</button>
-    <div id="results"></div>
-    <ul id="closest-stations"></ul>
-    <div id="map" data-stations="<%= JSON.stringify(stations) %>"></div>
-    <script id="stations-data" type="application/json">
-    <%= JSON.stringify(stations) %>
-  </script>
-    <script src="/js/main.js" defer></script>
+    <script src="/js/main.js"></script>
 </body>
 
 </html>
