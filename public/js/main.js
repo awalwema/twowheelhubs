@@ -84,7 +84,7 @@ async function displayClosestStations() {
                 });
 
                 // Add click event listener
-                marker.addListener('click', () => {
+                marker.addListener('pointerdown', () => {
                     console.log('Marker mouseclick event triggered');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
@@ -103,23 +103,42 @@ async function displayClosestStations() {
                 });
 
                 // Add click event listener
-                marker.addListener('touchstart', () => {
-                    console.log('Marker touchstart event triggered');
-                    if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                                const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
-                                window.open(googleMapsUrl, '_blank');
-                            },
-                            () => {
-                                alert('Error: Geolocation is not available or permission is denied.');
-                            }
-                        );
-                    } else {
-                        alert('Error: Geolocation is not supported by this browser.');
-                    }
-                });
+                // marker.addListener('click', () => {
+                //     console.log('Marker mouseclick event triggered');
+                //     if (navigator.geolocation) {
+                //         navigator.geolocation.getCurrentPosition(
+                //             (position) => {
+                //                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                //                 const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
+                //                 window.open(googleMapsUrl, '_blank');
+                //             },
+                //             () => {
+                //                 alert('Error: Geolocation is not available or permission is denied.');
+                //             }
+                //         );
+                //     } else {
+                //         alert('Error: Geolocation is not supported by this browser.');
+                //     }
+                // });
+
+                // // Add click event listener
+                // marker.addListener('touchstart', () => {
+                //     console.log('Marker touchstart event triggered');
+                //     if (navigator.geolocation) {
+                //         navigator.geolocation.getCurrentPosition(
+                //             (position) => {
+                //                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                //                 const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
+                //                 window.open(googleMapsUrl, '_blank');
+                //             },
+                //             () => {
+                //                 alert('Error: Geolocation is not available or permission is denied.');
+                //             }
+                //         );
+                //     } else {
+                //         alert('Error: Geolocation is not supported by this browser.');
+                //     }
+                // });
 
 
                 markers.push(marker);
