@@ -62,3 +62,9 @@ ol {
 .stations-list {
     padding-left: 20px;
 }
+
+html,
+body,
+#map {
+    touch-action: none;
+}
