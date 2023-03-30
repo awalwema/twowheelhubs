@@ -1,0 +1,16 @@
+# Node modules (if you're using Node.js)
+node_modules/
+
+# API keys and other sensitive information
+config.js
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Editor generated files
+*.log
+*.bak
+*.swp
+*.swo

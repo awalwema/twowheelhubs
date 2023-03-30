@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closest Bike Stations</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=geometry,places"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <h1>Find Closest Bike Stations</h1>
+        <p>Follow these simple steps to find the closest bike stations:</p>
+        <ol>
+            <li>Enter your destination in the search box.</li>
+            <li>Click "Search" to find the nearest bike stations.</li>
+            <li>Click on a bike station marker for directions.</li>
+        </ol>
+
+        <div class="search-container">
+            <input id="destination" type="text" placeholder="Enter destination...">
+            <button id="search">Search</button>
+        </div>
+
+        <div id="map" class="map-container"></div>
+
+        <h2>Closest Stations:</h2>
+        <ol id="closest-stations" class="stations-list"></ol>
+    </div>
+    <script src="main.js"></script>
+</body>
+
+</html>
