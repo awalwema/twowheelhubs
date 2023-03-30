@@ -51,46 +51,84 @@ const bikeIcon = {
 //     };
 // }
 
+// function handleClick(clickType) {
+//     return function () {
+//         console.log(clickType + " triggered");
+//         const station = this;
+//         if (navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition(
+//                 (position) => {
+//                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//                     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+
+//                     console.log('User location:', userLatLng.toString());
+//                     console.log('Google Maps URL:', googleMapsUrl);
+
+//                     // Create an anchor element and set its href attribute to the Google Maps URL
+//                     const link = document.createElement('a');
+//                     link.href = googleMapsUrl;
+//                     link.target = '_blank';
+
+//                     const button = document.createElement('button');
+//                     button.textContent = 'Open Google Maps';
+//                     button.onclick = () => {
+//                         link.click();
+//                     };
+
+//                     // Append the button to a container, e.g., the 'closest-stations' list or another suitable container
+//                     const container = document.getElementById('closest-stations');
+//                     container.appendChild(button);
+
+//                 },
+//                 () => {
+//                     console.log('Error: Geolocation is not available or permission is denied.');
+//                     alert('Error: Geolocation is not available or permission is denied.');
+//                 }
+//             );
+//         } else {
+//             console.log('Error: Geolocation is not supported by this browser.');
+//             alert('Error: Geolocation is not supported by this browser.');
+//         }
+//     };
+// }
+
 function handleClick(clickType) {
     return function () {
         console.log(clickType + " triggered");
         const station = this;
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+        const modal = document.getElementById('confirmModal');
+        const confirmYes = document.getElementById('confirmYes');
+        const confirmNo = document.getElementById('confirmNo');
 
-                    console.log('User location:', userLatLng.toString());
-                    console.log('Google Maps URL:', googleMapsUrl);
+        // Show the modal
+        modal.style.display = 'block';
 
-                    // Create an anchor element and set its href attribute to the Google Maps URL
-                    const link = document.createElement('a');
-                    link.href = googleMapsUrl;
-                    link.target = '_blank';
+        // When the user clicks on Yes, open the Google Maps URL
+        confirmYes.onclick = () => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                        const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+                        window.open(googleMapsUrl, '_blank');
+                    },
+                    () => {
+                        alert('Error: Geolocation is not available or permission is denied.');
+                    }
+                );
+            } else {
+                alert('Error: Geolocation is not supported by this browser.');
+            }
+            modal.style.display = 'none';
+        };
 
-                    const button = document.createElement('button');
-                    button.textContent = 'Open Google Maps';
-                    button.onclick = () => {
-                        link.click();
-                    };
-
-                    // Append the button to a container, e.g., the 'closest-stations' list or another suitable container
-                    const container = document.getElementById('closest-stations');
-                    container.appendChild(button);
-
-                },
-                () => {
-                    console.log('Error: Geolocation is not available or permission is denied.');
-                    alert('Error: Geolocation is not available or permission is denied.');
-                }
-            );
-        } else {
-            console.log('Error: Geolocation is not supported by this browser.');
-            alert('Error: Geolocation is not supported by this browser.');
-        }
+        // When the user clicks on No, close the modal
+        confirmNo.onclick = () => {
+            modal.style.display = 'none';
+        };
     };
 }
+
 
 
 // ...

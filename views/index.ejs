@@ -25,6 +25,15 @@
             <button id="search">Search</button>
         </div>
 
+        <div id="confirmModal" class="modal">
+            <div class="modal-content">
+                <p id="confirmText">Do you want to open Google Maps for directions?</p>
+                <button id="confirmYes">Yes</button>
+                <button id="confirmNo">No</button>
+            </div>
+        </div>
+
+
         <div id="map" class="map-container" data-stations="<%= JSON.stringify(stations) %>"></div>
         <h2>Closest Stations:</h2>
         <ol id="closest-stations" class="stations-list"></ol>
