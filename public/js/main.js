@@ -84,6 +84,7 @@ function handleClick(clickType) {
                         document.getElementById("open-apple-maps").setAttribute("data-url", appleMapsUrl);
                         document.getElementById("open-google-maps").setAttribute("data-url", googleMapsUrl);
                     } else {
+                        showLoadingScreen()
                         // Open Google Maps URL for other devices
                         const link = document.getElementById("map-link");
                         link.setAttribute("href", googleMapsUrl);
@@ -92,6 +93,7 @@ function handleClick(clickType) {
                 },
                 () => {
                     alert("Error: Geolocation is not available or permission is denied.");
+                    hideLoadingScreen()
                 }
             );
         } else {
@@ -132,9 +134,15 @@ function openMapApp(url) {
     document.getElementById("modal").style.display = "none";
 }
 
+function showLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.style.display = 'flex';
+}
 
-
-
+function hideLoadingScreen() {
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.style.display = 'none';
+}
 
 async function getDestinationCoordinates(destination) {
     const geocoder = new google.maps.Geocoder();
