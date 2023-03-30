@@ -99,6 +99,38 @@ function isIOS() {
     );
 }
 
+// function handleClick(clickType) {
+//     return function () {
+//         console.log(clickType + " triggered");
+//         const station = this;
+
+//         if (navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition(
+//                 (position) => {
+//                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//                     let mapsUrl;
+
+//                     if (isIOS()) {
+//                         console.log("is iphone!!!!")
+//                         // Use Apple Maps URL for iOS devices
+//                         mapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
+//                     } else {
+//                         // Use Google Maps URL for other devices
+//                         mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+//                     }
+
+//                     window.open(mapsUrl, "_blank");
+//                 },
+//                 () => {
+//                     alert("Error: Geolocation is not available or permission is denied.");
+//                 }
+//             );
+//         } else {
+//             alert("Error: Geolocation is not supported by this browser.");
+//         }
+//     };
+// }
+
 function handleClick(clickType) {
     return function () {
         console.log(clickType + " triggered");
@@ -111,7 +143,6 @@ function handleClick(clickType) {
                     let mapsUrl;
 
                     if (isIOS()) {
-                        console.log("is iphone!!!!")
                         // Use Apple Maps URL for iOS devices
                         mapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
                     } else {
@@ -119,7 +150,10 @@ function handleClick(clickType) {
                         mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
                     }
 
-                    window.open(mapsUrl, "_blank");
+                    // Set the link's href attribute and trigger a click event
+                    const link = document.getElementById("map-link");
+                    link.setAttribute("href", mapsUrl);
+                    link.click();
                 },
                 () => {
                     alert("Error: Geolocation is not available or permission is denied.");
@@ -130,6 +164,7 @@ function handleClick(clickType) {
         }
     };
 }
+
 
 
 
