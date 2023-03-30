@@ -30,6 +30,27 @@ const bikeIcon = {
 //     }
 // }
 
+// function handleClick(clickType) {
+//     return function () {
+//         console.log(clickType + " triggered");
+//         const station = this;
+//         if (navigator.geolocation) {
+//             navigator.geolocation.getCurrentPosition(
+//                 (position) => {
+//                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+//                     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+//                     window.open(googleMapsUrl, '_blank');
+//                 },
+//                 () => {
+//                     alert('Error: Geolocation is not available or permission is denied.');
+//                 }
+//             );
+//         } else {
+//             alert('Error: Geolocation is not supported by this browser.');
+//         }
+//     };
+// }
+
 function handleClick(clickType) {
     return function () {
         console.log(clickType + " triggered");
@@ -39,7 +60,15 @@ function handleClick(clickType) {
                 (position) => {
                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
                     const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
-                    window.open(googleMapsUrl, '_blank');
+
+                    // Create an anchor element and set its href attribute to the Google Maps URL
+                    const link = document.createElement('a');
+                    link.href = googleMapsUrl;
+                    link.target = '_blank';
+
+                    // Trigger a click event on the anchor element programmatically
+                    link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+
                 },
                 () => {
                     alert('Error: Geolocation is not available or permission is denied.');
@@ -50,6 +79,7 @@ function handleClick(clickType) {
         }
     };
 }
+
 
 // ...
 
