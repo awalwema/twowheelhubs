@@ -85,6 +85,7 @@ async function displayClosestStations() {
 
                 // Add click event listener
                 marker.addListener('click', () => {
+                    console.log('Marker mouseclick event triggered');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             (position) => {
@@ -103,6 +104,7 @@ async function displayClosestStations() {
 
                 // Add click event listener
                 marker.addListener('touchstart', () => {
+                    console.log('Marker touchstart event triggered');
                     if (navigator.geolocation) {
                         navigator.geolocation.getCurrentPosition(
                             (position) => {
