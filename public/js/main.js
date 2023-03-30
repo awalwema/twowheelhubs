@@ -64,7 +64,8 @@ function isIOS() {
 
 function handleClick(clickType) {
     return function () {
-        console.log(clickType + " triggered");
+        // Show the modal
+        showModal();
         const station = this;
 
         if (navigator.geolocation) {
@@ -98,6 +99,17 @@ function handleClick(clickType) {
         }
     };
 }
+
+function showModal() {
+    const modalContainer = document.querySelector('.modal-container');
+    modalContainer.style.display = 'block';
+}
+
+
+document.querySelector('.close').addEventListener('click', () => {
+    const modalContainer = document.querySelector('.modal-container');
+    modalContainer.style.display = 'none';
+});
 
 document.getElementById("open-apple-maps").addEventListener("click", function () {
     openMapApp(this.getAttribute("data-url"));
