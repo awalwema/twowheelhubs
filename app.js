@@ -5,48 +5,52 @@ app.set('view engine', 'ejs');
 var path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.get('/', async (req, res) => {
-//     const fetch = (await import('node-fetch')).default;
+const cache = {}; // initialize cache object
 
-//     const bayWheelsUrl = 'https://gbfs.baywheels.com/gbfs/en/station_information.json';
-//     const citiBikeUrl = 'https://gbfs.citibikenyc.com/gbfs/en/station_information.json';
-//     const bluebikesUrl = 'https://gbfs.bluebikes.com/gbfs/en/station_information.json';
+async function getCachedData(url) {
+    // check if data is in cache and not older than 1 day
+    if (cache[url] && Date.now() - cache[url].timestamp < 86400000) {
+        console.log('Data found in cache!');
+        return cache[url].data;
+    }
 
-//     try {
-//         const [bayWheelsResponse, citiBikeResponse, bluebikesResponse] = await Promise.all([
-//             fetch(bayWheelsUrl),
-//             fetch(citiBikeUrl),
-//             fetch(bluebikesUrl),
-//         ]);
+    // if data not in cache or older than 1 day, fetch from API and store in cache
+    console.log('Data not found in cache. Fetching from API...');
+    const fetch = (await import('node-fetch')).default;
+    const response = await fetch(url);
+    const data = await handleResponse(response);
 
-//         const [bayWheelsData, citiBikeData, bluebikesData] = await Promise.all([
-//             bayWheelsResponse.json(),
-//             citiBikeResponse.json(),
-//             bluebikesResponse.json(),
-//         ]);
+    cache[url] = { data, timestamp: Date.now() };
+    console.log('Data stored in cache.');
+    return data;
+}
 
-//         const bayWheelsStations = bayWheelsData.data.stations;
-//         const citiBikeStations = citiBikeData.data.stations;
-//         const bluebikesStations = bluebikesData.data.stations;
 
-//         const stations = [...bayWheelsStations, ...citiBikeStations, ...bluebikesStations];
-
-//         res.render('index', { stations });
-//     } catch (error) {
-//         console.error('Error fetching station data:', error);
-//         res.status(500).send('Error fetching station data.');
+// async function handleResponse(response) {
+//     if (response.ok) {
+//         const data = await response.json();
+//         return data;
+//     } else {
+//         console.warn(`Error ${response.status} while fetching bike station data.`);
+//         return { data: { stations: [] } };
 //     }
-// });
+// }
 
 async function handleResponse(response) {
-    if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        console.warn(`Error ${response.status} while fetching bike station data.`);
+    try {
+        if (response.ok) {
+            const data = await response.json();
+            return data;
+        } else {
+            console.warn(`Error ${response.status} while fetching bike station data.`);
+            return { data: { stations: [] } };
+        }
+    } catch (error) {
+        console.error('Error handling response:', error);
         return { data: { stations: [] } };
     }
 }
+
 
 app.get('/', async (req, res) => {
     const fetch = (await import('node-fetch')).default;
@@ -57,32 +61,10 @@ app.get('/', async (req, res) => {
     const divvyUrl = 'https://gbfs.divvybikes.com/gbfs/en/station_information.json';
     const capitalBikeshareUrl = 'https://gbfs.capitalbikeshare.com/gbfs/en/station_information.json';
     const niceRideUrl = 'https://gbfs.niceridemn.com/gbfs/en/station_information.json';
-    // const bixiUrl = 'https://gbfs.bixi.com/gbfs/en/station_information.json'; London
-    // const citiBikeMiamiUrl = 'https://mds.bird.co/gbfs/citibikemiami/en/station_information.json';
     const houstonBcycleUrl = 'https://gbfs.bcycle.com/bcycle_houston/station_information.json';
     const madisonBikeShareUrl = "https://gbfs.bcycle.com/bcycle_madison/station_information.json";
 
     try {
-        const [
-            bayWheelsResponse,
-            citiBikeResponse,
-            bluebikesResponse,
-            divvyResponse,
-            capitalBikeshareResponse,
-            niceRideResponse,
-            houstonBcycleResponse,
-            madisonBikeShareResponse,
-        ] = await Promise.all([
-            fetch(bayWheelsUrl),
-            fetch(citiBikeUrl),
-            fetch(bluebikesUrl),
-            fetch(divvyUrl),
-            fetch(capitalBikeshareUrl),
-            fetch(niceRideUrl),
-            fetch(houstonBcycleUrl),
-            fetch(madisonBikeShareUrl),
-        ]);
-
         const [
             bayWheelsData,
             citiBikeData,
@@ -93,15 +75,16 @@ app.get('/', async (req, res) => {
             houstonBcycleData,
             madisonBikeData,
         ] = await Promise.all([
-            handleResponse(bayWheelsResponse),
-            handleResponse(citiBikeResponse),
-            handleResponse(bluebikesResponse),
-            handleResponse(divvyResponse),
-            handleResponse(capitalBikeshareResponse),
-            handleResponse(niceRideResponse),
-            handleResponse(houstonBcycleResponse),
-            handleResponse(madisonBikeShareResponse),
+            getCachedData(bayWheelsUrl),
+            getCachedData(citiBikeUrl),
+            getCachedData(bluebikesUrl),
+            getCachedData(divvyUrl),
+            getCachedData(capitalBikeshareUrl),
+            getCachedData(niceRideUrl),
+            getCachedData(houstonBcycleUrl),
+            getCachedData(madisonBikeShareUrl),
         ]);
+
 
         const bayWheelsStations = bayWheelsData.data.stations;
         const citiBikeStations = citiBikeData.data.stations;
@@ -129,9 +112,6 @@ app.get('/', async (req, res) => {
         res.status(500).send('Error fetching station data');
     }
 });
-
-
-
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
