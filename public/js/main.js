@@ -9,7 +9,7 @@ let autocomplete;
 
 const bikeIcon = {
     url: '/images/bicycle.png',
-    scaledSize: new google.maps.Size(25, 25),
+    scaledSize: new google.maps.Size(13, 13),
 };
 
 function isIOS() {
