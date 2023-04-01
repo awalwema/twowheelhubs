@@ -8,8 +8,8 @@ let autocomplete;
 
 
 const bikeIcon = {
-    url: '/images/icons8-dot-24.png',
-    scaledSize: new google.maps.Size(13, 13),
+    url: '/images/icons8-sphere-50.png',
+    scaledSize: new google.maps.Size(15, 15),
 };
 
 function isIOS() {
