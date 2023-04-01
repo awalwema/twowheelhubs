@@ -5,6 +5,7 @@ let destinationMarker = null;
 let directionsRenderer = null;
 let directionsService = null;
 let autocomplete;
+let userMarker = null;
 
 
 const bikeIcon = {
@@ -19,8 +20,80 @@ function isIOS() {
     );
 }
 
+function showUserLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                };
 
-// function handleClick(clickType) {
+                // Center the map on the user's location and set the zoom level
+                map.setCenter(userLocation);
+                map.setZoom(15);
+
+                // Add a marker for the user's location
+                if (!userMarker) {
+                    userMarker = new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        title: "Your location",
+                        icon: {
+                            url: "/images/icons8-delivery-pin-for-parcel-delivery-location-making-24.png", // Change the URL to the desired icon
+                            scaledSize: new google.maps.Size(30, 30), // Adjust the size as needed
+                        },
+
+                    });
+                } else {
+                    userMarker.setPosition(userLocation);
+                }
+            },
+            (error) => {
+                alert("Error: " + error.message);
+            }
+        );
+    } else {
+        alert("Geolocation is not supported by this browser.");
+    }
+}
+
+
+
+// function showUserLocation() {
+//     if (navigator.geolocation) {
+//         navigator.geolocation.getCurrentPosition(
+//             (position) => {
+//                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+//                 // If the userMarker already exists, update its position
+//                 if (userMarker) {
+//                     userMarker.setPosition(userLatLng);
+//                 } else {
+//                     // If the userMarker doesn't exist, create a new one
+//                     userMarker = new google.maps.Marker({
+//                         position: userLatLng,
+//                         map: map,
+//                         title: "Your location",
+// icon: {
+//     url: "/images/icons8-current-location-66.png", // Change the URL to the desired icon
+//     scaledSize: new google.maps.Size(30, 30), // Adjust the size as needed
+// },
+//                     });
+//                 }
+
+//                 // Center the map to the user's location
+//                 map.setCenter(userLatLng);
+//             },
+//             () => {
+//                 alert("Error: Geolocation is not available or permission is denied.");
+//             }
+//         );
+//     } else {
+//         alert("Error: Geolocation is not supported by this browser.");
+//     }
+// }
+
 //     return function () {
 //         console.log(clickType + " triggered");
 //         const station = this;
@@ -292,6 +365,11 @@ async function requestDirections(origin, destination) {
     });
 }
 
+document.getElementById('locate').addEventListener('click', () => {
+    showUserLocation();
+});
+
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     const jsonString = document.getElementById('map').dataset.stations;
@@ -318,7 +396,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                        map.setCenter(userLatLng);
+                        // map.setCenter(userLatLng);
+                        showUserLocation()
                     },
                     () => {
                         // If geolocation is not available or permission is denied, default to San Francisco
@@ -364,9 +443,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
-// document.getElementById('locate').addEventListener('click', () => {
-//     showUserLocation(map);
-// });
 
 document.getElementById('search').addEventListener('click', () => {
     const destination = document.getElementById('destination').value;

@@ -28,28 +28,32 @@
 
             <div class="search-container">
                 <input id="destination" type="text" placeholder="Enter destination...">
-                <button id="search">Search</button>
-            </div>
-
-            <div class="modal-container">
-                <div id="modal" class="modal" style="display:none;">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <h3>Select Your Preferred Map App</h3>
-                        <button id="open-apple-maps">Apple Maps</button>
-                        <button id="open-google-maps">Google Maps</button>
-                    </div>
+                <div class="button-container">
+                    <button id="search" class="action-button">Search</button>
+                    <button id="locate" class="action-button">Find me</button>
                 </div>
             </div>
-
-
-
-            <a id="map-link" style="display:none;"></a>
-
-            <div id="map" class="map-container" data-stations="<%= JSON.stringify(stations) %>"></div>
-            <h2>Closest Stations:</h2>
-            <ol id="closest-stations" class="stations-list"></ol>
         </div>
+
+        <div class="modal-container">
+            <div id="modal" class="modal" style="display:none;">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3>Select Your Preferred Map App</h3>
+                    <button id="open-apple-maps">Apple Maps</button>
+                    <button id="open-google-maps">Google Maps</button>
+                </div>
+            </div>
+        </div>
+
+
+
+        <a id="map-link" style="display:none;"></a>
+
+        <div id="map" class="map-container" data-stations="<%= JSON.stringify(stations) %>"></div>
+        <h2>Closest Stations:</h2>
+        <ol id="closest-stations" class="stations-list"></ol>
+    </div>
     </div>
 
     <div class="push"></div>
