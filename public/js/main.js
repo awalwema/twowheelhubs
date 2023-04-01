@@ -8,7 +8,7 @@ let autocomplete;
 
 
 const bikeIcon = {
-    url: '/images/bicycle.png',
+    url: '/images/icons8-dot-24.png',
     scaledSize: new google.maps.Size(13, 13),
 };
 
