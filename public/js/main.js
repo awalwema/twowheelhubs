@@ -276,8 +276,10 @@ async function displayClosestStations() {
             // Remove existing markers
             removeMarkers();
 
-            // Add new markers for the closest stations
-            closestStations.forEach((station) => {
+            const list = document.getElementById('closest-stations');
+            list.innerHTML = '';
+
+            closestStations.forEach((station, index) => {
                 const marker = new google.maps.Marker({
                     position: {
                         lat: station.lat,
@@ -288,44 +290,107 @@ async function displayClosestStations() {
                     icon: bikeIcon,
                 });
 
-                // // Add click event listener
-                // marker.addListener('pointerdown', () => {
-                //     console.log('Marker pointer event triggered');
-                //     if (navigator.geolocation) {
-                //         navigator.geolocation.getCurrentPosition(
-                //             (position) => {
-                //                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                //                 const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.lat},${station.lon}&travelmode=bicycling`;
-                //                 window.open(googleMapsUrl, '_blank');
-                //             },
-                //             () => {
-                //                 alert('Error: Geolocation is not available or permission is denied.');
-                //             }
-                //         );
-                //     } else {
-                //         alert('Error: Geolocation is not supported by this browser.');
-                //     }
-                // });
-
                 marker.addListener('click', handleClick("click"));
                 marker.addListener('touchstart', handleClick("touchstart"));
 
-
                 markers.push(marker);
-            });
 
-            const list = document.getElementById('closest-stations');
-            list.innerHTML = '';
-            closestStations.forEach((station, index) => {
+                // Add a unique station ID for each list item
+                const stationId = `station-${index}`;
+
                 const li = document.createElement('li');
                 li.textContent = `${station.name}`;
+                li.id = stationId;
                 list.appendChild(li);
+
+                // Add the click event listener to the list item
+                addListItemClickListener(`station-${index}`, marker);
             });
+
         } else {
             alert('Geocode was not successful for the following reason: ' + status);
         }
     });
 }
+
+function addListItemClickListener(stationId, marker) {
+    const listItem = document.getElementById(stationId);
+
+    listItem.addEventListener('click', () => {
+        // Set the map center to the marker's position
+        map.setCenter(marker.getPosition());
+
+        // Open the info window for the clicked marker
+        if (infoWindow) {
+            infoWindow.close();
+        }
+        infoWindow = new google.maps.InfoWindow({
+            content: marker.getTitle(),
+        });
+        infoWindow.open(map, marker);
+    });
+}
+
+
+
+// async function displayClosestStations() {
+//     const destination = document.getElementById('destination').value;
+//     const geocoder = new google.maps.Geocoder();
+//     geocoder.geocode({ address: destination.toString() }, async (results, status) => {
+//         if (status === 'OK') {
+//             const destinationLatLng = results[0].geometry.location;
+
+//             // Set the map center to the destination
+//             map.setCenter(destinationLatLng);
+
+//             // Remove the previous destination marker if it exists
+//             if (destinationMarker) {
+//                 destinationMarker.setMap(null);
+//             }
+
+//             // Create a new destination marker with the default red icon
+//             destinationMarker = new google.maps.Marker({
+//                 position: destinationLatLng,
+//                 map: map,
+//                 title: destination,
+//             });
+
+//             const closestStations = await findClosestStations(destinationLatLng, 5);
+
+//             // Remove existing markers
+//             removeMarkers();
+
+//             // Add new markers for the closest stations
+//             closestStations.forEach((station) => {
+//                 const marker = new google.maps.Marker({
+//                     position: {
+//                         lat: station.lat,
+//                         lng: station.lon,
+//                     },
+//                     map: map,
+//                     title: station.name,
+//                     icon: bikeIcon,
+//                 });
+
+//                 marker.addListener('click', handleClick("click"));
+//                 marker.addListener('touchstart', handleClick("touchstart"));
+
+
+//                 markers.push(marker);
+//             });
+
+//             const list = document.getElementById('closest-stations');
+//             list.innerHTML = '';
+//             closestStations.forEach((station, index) => {
+//                 const li = document.createElement('li');
+//                 li.textContent = `${station.name}`;
+//                 list.appendChild(li);
+//             });
+//         } else {
+//             alert('Geocode was not successful for the following reason: ' + status);
+//         }
+//     });
+// }
 
 function initAutocomplete(map) {
     const input = document.getElementById('destination');

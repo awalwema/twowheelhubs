@@ -9,7 +9,7 @@ const cache = {}; // initialize cache object
 
 async function getCachedData(url) {
     // check if data is in cache and not older than 1 day
-    if (cache[url] && Date.now() - cache[url].timestamp < 86400000) {
+    if (cache[url] && Date.now() - cache[url].timestamp < 604800000) {
         console.log('Data found in cache!');
         return cache[url].data;
     }

@@ -184,6 +184,11 @@ button:hover {
     font-weight: bold;
 }
 
+.stations-list li {
+    cursor: pointer;
+}
+
+
 .footer {
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
