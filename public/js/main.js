@@ -6,12 +6,37 @@ let directionsRenderer = null;
 let directionsService = null;
 let autocomplete;
 let userMarker = null;
+let selectedMarker = null;
+
 
 
 const bikeIcon = {
     url: '/images/icons8-sphere-50.png',
     scaledSize: new google.maps.Size(15, 15),
 };
+
+const selectedBikeIcon = {
+    url: '/images/icons8-sphere-50-blue.png', // You can change the color or replace the URL with your own icon
+    scaledSize: new google.maps.Size(20, 20),
+};
+
+function showInfoWindow(marker, content) {
+    if (infoWindow) {
+        infoWindow.close();
+    }
+    // const infoContent = `<div>${content}</div><button id="go-button">Go</button>`;
+    const infoContent = `<div>${content}</div><button id="go-button" style="font-size: 12px; padding: 4px 8px;"><span>Go</span> <img src="/images/icons8-direction-turn-48.png" alt="Go" style="width: 16px; height: 16px; vertical-align: middle; margin-left: 4px;"></button>`;
+    infoWindow = new google.maps.InfoWindow({
+        content: infoContent,
+    });
+    infoWindow.open(map, marker);
+
+    // Add a click event listener for the "Go" button
+    google.maps.event.addListener(infoWindow, 'domready', () => {
+        const goButton = document.getElementById('go-button');
+        goButton.addEventListener('click', directUser.bind(marker));
+    });
+}
 
 function isIOS() {
     return (
@@ -59,121 +84,51 @@ function showUserLocation() {
 }
 
 
-
-// function showUserLocation() {
-//     if (navigator.geolocation) {
-//         navigator.geolocation.getCurrentPosition(
-//             (position) => {
-//                 const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-
-//                 // If the userMarker already exists, update its position
-//                 if (userMarker) {
-//                     userMarker.setPosition(userLatLng);
-//                 } else {
-//                     // If the userMarker doesn't exist, create a new one
-//                     userMarker = new google.maps.Marker({
-//                         position: userLatLng,
-//                         map: map,
-//                         title: "Your location",
-// icon: {
-//     url: "/images/icons8-current-location-66.png", // Change the URL to the desired icon
-//     scaledSize: new google.maps.Size(30, 30), // Adjust the size as needed
-// },
-//                     });
-//                 }
-
-//                 // Center the map to the user's location
-//                 map.setCenter(userLatLng);
-//             },
-//             () => {
-//                 alert("Error: Geolocation is not available or permission is denied.");
-//             }
-//         );
-//     } else {
-//         alert("Error: Geolocation is not supported by this browser.");
-//     }
-// }
-
-//     return function () {
-//         console.log(clickType + " triggered");
-//         const station = this;
-
-//         if (navigator.geolocation) {
-//             navigator.geolocation.getCurrentPosition(
-//                 (position) => {
-//                     const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-//                     let mapsUrl;
-
-//                     if (isIOS()) {
-//                         // Use Apple Maps URL for iOS devices
-//                         // mapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
-//                         mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
-
-//                     } else {
-//                         // Use Google Maps URL for other devices
-//                         mapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
-//                     }
-
-//                     // Set the link's href attribute and trigger a click event
-//                     const link = document.getElementById("map-link");
-//                     link.setAttribute("href", mapsUrl);
-//                     link.click();
-//                 },
-//                 () => {
-//                     alert("Error: Geolocation is not available or permission is denied.");
-//                 }
-//             );
-//         } else {
-//             alert("Error: Geolocation is not supported by this browser.");
-//         }
-//     };
-// }
-
-
-
-
-
-// ...
-
-function handleClick(clickType) {
-    return function () {
-        // Show the modal
-        showModal();
-        const station = this;
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
-                    const appleMapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
-
-                    if (isIOS()) {
-                        // Show the modal for iOS users
-                        const modal = document.getElementById("modal");
-                        modal.style.display = "block";
-
-                        // Set data attributes with map URLs on the buttons
-                        document.getElementById("open-apple-maps").setAttribute("data-url", appleMapsUrl);
-                        document.getElementById("open-google-maps").setAttribute("data-url", googleMapsUrl);
-                    } else {
-                        showLoadingScreen()
-                        // Open Google Maps URL for other devices
-                        const link = document.getElementById("map-link");
-                        link.setAttribute("href", googleMapsUrl);
-                        link.click();
-                    }
-                },
-                () => {
-                    alert("Error: Geolocation is not available or permission is denied.");
-                    hideLoadingScreen()
-                }
-            );
-        } else {
-            alert("Error: Geolocation is not supported by this browser.");
-        }
-    };
+function handleClick() {
+    showInfoWindow(this, this.getTitle());
 }
+
+function directUser() {
+    const station = this;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const userLatLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${userLatLng.lat()},${userLatLng.lng()}&destination=${station.getPosition().lat()},${station.getPosition().lng()}&travelmode=bicycling`;
+                const appleMapsUrl = `http://maps.apple.com/?saddr=${userLatLng.lat()},${userLatLng.lng()}&daddr=${station.getPosition().lat()},${station.getPosition().lng()}&dirflg=b`;
+
+                if (isIOS()) {
+                    // Show the modal for iOS users
+                    const modal = document.getElementById("modal");
+                    modal.style.display = "block";
+
+                    // Set data attributes with map URLs on the buttons
+                    document.getElementById("open-apple-maps").setAttribute("data-url", appleMapsUrl);
+                    document.getElementById("open-google-maps").setAttribute("data-url", googleMapsUrl);
+                } else {
+                    showLoadingScreen()
+                    // Open Google Maps URL for other devices
+                    const link = document.getElementById("map-link");
+                    link.setAttribute("href", googleMapsUrl);
+                    link.click();
+                }
+            },
+            () => {
+                alert("Error: Geolocation is not available or permission is denied.");
+                hideLoadingScreen()
+            }
+        );
+    } else {
+        alert("Error: Geolocation is not supported by this browser.");
+    }
+}
+
+
+
+
+
+
 
 function showModal() {
     const modalContainer = document.querySelector('.modal-container');
@@ -249,6 +204,8 @@ async function findClosestStations(destinationLatLng, numberOfStations) {
     return Promise.resolve(distances.slice(0, numberOfStations).map((item) => item.station));
 }
 
+let infoWindow;
+
 async function displayClosestStations() {
     const destination = document.getElementById('destination').value;
     const geocoder = new google.maps.Geocoder();
@@ -290,8 +247,9 @@ async function displayClosestStations() {
                     icon: bikeIcon,
                 });
 
-                marker.addListener('click', handleClick("click"));
-                marker.addListener('touchstart', handleClick("touchstart"));
+                marker.addListener('click', handleClick);
+
+
 
                 markers.push(marker);
 
@@ -301,10 +259,16 @@ async function displayClosestStations() {
                 const li = document.createElement('li');
                 li.textContent = `${station.name}`;
                 li.id = stationId;
+                li.style.cursor = 'pointer';
                 list.appendChild(li);
 
                 // Add the click event listener to the list item
-                addListItemClickListener(`station-${index}`, marker);
+                li.addEventListener('click', () => {
+                    showInfoWindow(marker, station.name);
+                });
+
+
+
             });
 
         } else {
@@ -315,82 +279,32 @@ async function displayClosestStations() {
 
 function addListItemClickListener(stationId, marker) {
     const listItem = document.getElementById(stationId);
-
     listItem.addEventListener('click', () => {
-        // Set the map center to the marker's position
-        map.setCenter(marker.getPosition());
-
-        // Open the info window for the clicked marker
-        if (infoWindow) {
-            infoWindow.close();
-        }
-        infoWindow = new google.maps.InfoWindow({
-            content: marker.getTitle(),
-        });
-        infoWindow.open(map, marker);
+        openModal(marker.title, marker.position.lat(), marker.position.lng());
     });
 }
 
 
 
-// async function displayClosestStations() {
-//     const destination = document.getElementById('destination').value;
-//     const geocoder = new google.maps.Geocoder();
-//     geocoder.geocode({ address: destination.toString() }, async (results, status) => {
-//         if (status === 'OK') {
-//             const destinationLatLng = results[0].geometry.location;
+function openModal(stationName, lat, lon) {
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modal-title');
+    const goButton = document.getElementById('go-button');
 
-//             // Set the map center to the destination
-//             map.setCenter(destinationLatLng);
+    if (modal && modalTitle && goButton) {
+        modalTitle.textContent = stationName;
 
-//             // Remove the previous destination marker if it exists
-//             if (destinationMarker) {
-//                 destinationMarker.setMap(null);
-//             }
+        goButton.onclick = () => {
+            window.location.href = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=bicycling`;
+        };
 
-//             // Create a new destination marker with the default red icon
-//             destinationMarker = new google.maps.Marker({
-//                 position: destinationLatLng,
-//                 map: map,
-//                 title: destination,
-//             });
-
-//             const closestStations = await findClosestStations(destinationLatLng, 5);
-
-//             // Remove existing markers
-//             removeMarkers();
-
-//             // Add new markers for the closest stations
-//             closestStations.forEach((station) => {
-//                 const marker = new google.maps.Marker({
-//                     position: {
-//                         lat: station.lat,
-//                         lng: station.lon,
-//                     },
-//                     map: map,
-//                     title: station.name,
-//                     icon: bikeIcon,
-//                 });
-
-//                 marker.addListener('click', handleClick("click"));
-//                 marker.addListener('touchstart', handleClick("touchstart"));
+        modal.style.display = 'block';
+    } else {
+        console.error('Modal elements not found');
+    }
+}
 
 
-//                 markers.push(marker);
-//             });
-
-//             const list = document.getElementById('closest-stations');
-//             list.innerHTML = '';
-//             closestStations.forEach((station, index) => {
-//                 const li = document.createElement('li');
-//                 li.textContent = `${station.name}`;
-//                 list.appendChild(li);
-//             });
-//         } else {
-//             alert('Geocode was not successful for the following reason: ' + status);
-//         }
-//     });
-// }
 
 function initAutocomplete(map) {
     const input = document.getElementById('destination');
@@ -488,7 +402,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     icon: bikeIcon,
                     title: station.name,
                 });
-                marker.addListener('click', handleClick("click"))
+
+                marker.addListener('click', handleClick);
+
+
                 markers.push(marker);
             });
             console.log('Markers:', markers);
