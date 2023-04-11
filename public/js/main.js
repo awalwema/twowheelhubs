@@ -142,13 +142,13 @@ document.querySelector('.close').addEventListener('click', () => {
 });
 
 document.getElementById("open-apple-maps").addEventListener("click", function () {
-    const modalContainer = document.querySelector('modal');
+    const modalContainer = document.querySelector('.modal');
     modalContainer.style.display = 'none';
     openMapApp(this.getAttribute("data-url"));
 });
 
 document.getElementById("open-google-maps").addEventListener("click", function () {
-    const modalContainer = document.querySelector('modal');
+    const modalContainer = document.querySelector('.modal');
     modalContainer.style.display = 'none';
     openMapApp(this.getAttribute("data-url"));
 });
