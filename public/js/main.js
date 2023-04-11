@@ -142,13 +142,13 @@ document.querySelector('.close').addEventListener('click', () => {
 });
 
 document.getElementById("open-apple-maps").addEventListener("click", function () {
-    const modalContainer = document.querySelector('.modal-container');
+    const modalContainer = document.querySelector('modal');
     modalContainer.style.display = 'none';
     openMapApp(this.getAttribute("data-url"));
 });
 
 document.getElementById("open-google-maps").addEventListener("click", function () {
-    const modalContainer = document.querySelector('.modal-container');
+    const modalContainer = document.querySelector('modal');
     modalContainer.style.display = 'none';
     openMapApp(this.getAttribute("data-url"));
 });
@@ -304,8 +304,6 @@ function openModal(stationName, lat, lon) {
     }
 }
 
-
-
 function initAutocomplete(map) {
     const input = document.getElementById('destination');
     autocomplete = new google.maps.places.Autocomplete(input);
@@ -348,8 +346,6 @@ document.getElementById('locate').addEventListener('click', () => {
     showUserLocation();
 });
 
-
-
 document.addEventListener('DOMContentLoaded', async () => {
     const jsonString = document.getElementById('map').dataset.stations;
 
@@ -358,8 +354,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
         console.error('Error: JSON data not found');
     }
-
-
 
     function initMap(stations, callback) {
         try {
@@ -419,12 +413,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
-
     initMap(stations, (map) => {
         initAutocomplete(map);
     });
 });
-
 
 document.getElementById('search').addEventListener('click', () => {
     const destination = document.getElementById('destination').value;
