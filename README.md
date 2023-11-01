@@ -6,6 +6,12 @@
 
 Two Wheel Hubs is a web application that helps users find bike stations near them. It uses various APIs to fetch real-time data and displays it on a map.
 
+
+https://github.com/awalwema/twowheelhubs/assets/8847430/788c3897-a8d5-4388-9f27-10f364d8ab9b
+
+
+
+
 ## Getting Started
 
 ### Prerequisites
